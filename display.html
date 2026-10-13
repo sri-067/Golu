@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navarathri Golu | Display | ECE, Sri Eshwar College of Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Mukta:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --u: min(1vh, .56vw);            /* one unit scales with the screen, landscape or portrait */
+    --night: #20070f; --maroon: #4a0f22; --silk: #7a1730;
+    --gold: #e0b455; --gold-soft: #f6dd96; --marigold: #f59e1b; --paper: #fff3dd; --ink: #2a1208;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; overflow: hidden; }
+  body {
+    display: grid; grid-template-rows: calc(var(--u) * 12) 1fr;
+    font-family: "Mukta", system-ui, sans-serif; color: var(--paper);
+    background:
+      radial-gradient(ellipse 90% 60% at 30% 0%, rgba(122, 23, 48, .6), transparent 70%),
+      repeating-linear-gradient(45deg, rgba(224, 180, 85, .035) 0 2px, transparent 2px 22px),
+      repeating-linear-gradient(-45deg, rgba(224, 180, 85, .035) 0 2px, transparent 2px 22px),
+      var(--night);
+  }
+  body.idle { cursor: none; }
+  h1, h2 { font-family: "Yatra One", Georgia, serif; font-weight: 400; margin: 0; }
+  #petals { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+
+  .top { position: relative; z-index: 1; background: #fff; border-bottom: calc(var(--u) * .7) solid var(--gold);
+         display: flex; align-items: center; justify-content: center; }
+  .top img { height: 92%; width: auto; max-width: 96%; object-fit: contain; }
+
+  .stage { position: relative; z-index: 1; min-height: 0; display: grid;
+           grid-template-columns: auto 1fr; gap: calc(var(--u) * 5); padding: calc(var(--u) * 2.5) calc(var(--u) * 5); }
+  .fig { height: 100%; aspect-ratio: 825 / 1024; max-width: 100%; position: relative; justify-self: center; }
+  .fig::before { content: ""; position: absolute; inset: -4% -8%; z-index: -1;
+    background: radial-gradient(ellipse at 50% 55%, rgba(245, 158, 27, .5), transparent 65%); filter: blur(10px); }
+  .frame { position: absolute; inset: 0; border: calc(var(--u) * .35) solid var(--gold); border-radius: calc(var(--u) * 1);
+           overflow: hidden; background: var(--maroon);
+           box-shadow: 0 0 0 calc(var(--u) * .6) rgba(74,15,34,.9), 0 0 0 calc(var(--u) * .8) rgba(224,180,85,.6), 0 2vh 6vh rgba(0,0,0,.55); }
+  .box { position: absolute; inset: 0; transform-origin: 50% 60%; }
+  .box img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .band { position: absolute; border: .35vh solid var(--marigold); border-radius: 8px; opacity: 0;
+          background: rgba(245,158,27,.22); box-shadow: 0 0 3vh rgba(245,158,27,.75), inset 0 0 2vh rgba(255,224,130,.4);
+          transition: opacity .6s, top .8s cubic-bezier(.5,0,.2,1), height .8s, left .8s, width .8s; }
+  .band.on { opacity: 1; }
+
+  .panel { position: relative; min-width: 0; min-height: 0; }
+  .scene { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
+           opacity: 0; transform: translateY(2vh); transition: opacity .7s, transform .7s; pointer-events: none; padding-bottom: calc(var(--u) * 6); }
+  .scene.on { opacity: 1; transform: none; }
+  .kicker { color: var(--marigold); font-weight: 700; font-size: calc(var(--u) * 3); letter-spacing: .08em; text-transform: uppercase; }
+  .big { font-size: calc(var(--u) * 9.5); color: var(--gold-soft); line-height: 1.05; margin: calc(var(--u) * 1) 0 calc(var(--u) * 2); }
+  .dept { color: var(--gold); font-weight: 600; font-size: calc(var(--u) * 3.6); line-height: 1.25; }
+  .lead { font-size: calc(var(--u) * 3.6); line-height: 1.5; max-width: 30em; margin-top: calc(var(--u) * 2.5); }
+  .card { background: linear-gradient(160deg, #fff6e3, #f6dfb0); color: var(--ink); border: calc(var(--u) * .3) solid var(--gold);
+          border-radius: calc(var(--u) * 1.8); padding: calc(var(--u) * 3) calc(var(--u) * 3.6); box-shadow: 0 2vh 5vh rgba(0,0,0,.45); width: fit-content; max-width: calc(var(--u) * 88); }
+  .card .big { color: #5b1226; font-size: calc(var(--u) * 8); margin: 0 0 calc(var(--u) * 1.5); }
+  .card .kicker { color: var(--silk); }
+  .card p { margin: 0; font-size: calc(var(--u) * 3.9); line-height: 1.5; }
+  .card .where { display: block; margin-top: calc(var(--u) * 2); color: var(--silk); font-weight: 700; font-size: calc(var(--u) * 3); }
+  .qrbig { align-items: flex-start; }
+  .qrbig .qrimg { width: calc(var(--u) * 38); height: calc(var(--u) * 38); background: #fff; padding: calc(var(--u) * 1.6);
+                  border-radius: calc(var(--u) * 1.4); border: calc(var(--u) * .4) solid var(--gold); margin: calc(var(--u) * 2) 0; }
+  .qrbig .qrimg img { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+
+  .dots { position: absolute; left: 0; bottom: 0; display: flex; gap: calc(var(--u) * 1.4); }
+  .dots i { width: calc(var(--u) * 1.6); height: calc(var(--u) * 1.6); border-radius: 50%; background: rgba(224,180,85,.3); transition: background .4s, transform .4s; }
+  .dots i.on { background: var(--marigold); transform: scale(1.4); }
+
+  .mini { position: absolute; right: 0; bottom: 0; display: flex; align-items: center; gap: calc(var(--u) * 1.4); transition: opacity .5s; }
+  .mini.off { opacity: 0; }
+  .mini img { width: calc(var(--u) * 11); height: calc(var(--u) * 11); background: #fff; padding: calc(var(--u) * .7); border-radius: calc(var(--u) * .8); display: block; image-rendering: pixelated; }
+  .mini span { font-weight: 700; font-size: calc(var(--u) * 2.6); color: var(--gold-soft); line-height: 1.25; max-width: 7em; }
+
+  #soundHint { position: fixed; z-index: 5; right: calc(var(--u) * 5); top: calc(var(--u) * 15);
+    background: var(--marigold); color: var(--ink); font-weight: 700; padding: calc(var(--u) * 1.3) calc(var(--u) * 3);
+    border-radius: 999px; font-size: calc(var(--u) * 2.8); display: none; box-shadow: 0 6px 20px rgba(0,0,0,.5); }
+  #soundHint.show { display: block; }
+
+  @media (orientation: portrait) {
+    .stage { grid-template-columns: 1fr; grid-template-rows: 54% 1fr; gap: calc(var(--u) * 2); }
+    .fig { height: 100%; }
+    .scene { justify-content: flex-start; }
+    .big { font-size: calc(var(--u) * 7.2); }
+    .card .big { font-size: calc(var(--u) * 6.8); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .box { animation: drift 24s ease-in-out infinite alternate; }
+    .fig::before { animation: flicker 4.5s ease-in-out infinite; }
+    .band.on { animation: pulse 2s ease-in-out infinite; }
+    @keyframes drift { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.045) translate(-.6%, -.8%); } }
+    @keyframes flicker { 0%, 100% { opacity: .75; } 18% { opacity: 1; } 31% { opacity: .65; } 52% { opacity: .95; } 74% { opacity: .7; } }
+    @keyframes pulse { 50% { box-shadow: 0 0 5vh rgba(245,158,27,.95), inset 0 0 3vh rgba(255,224,130,.55); } }
+  }
+  @media (prefers-reduced-motion: reduce) { #petals { display: none; } .scene { transition: opacity .3s; transform: none; } }
+</style>
+</head>
+<body>
+<canvas id="petals" aria-hidden="true"></canvas>
+
+<header class="top"><img src="images/college-logo.png" alt="Sri Eshwar College of Engineering, Coimbatore"></header>
+
+<main class="stage">
+  <div class="fig">
+    <div class="frame"><div class="box">
+      <img src="images/golu.jpg" alt="Navarathri golu with electronic components on the steps">
+      <div class="band" id="band"></div>
+    </div></div>
+  </div>
+
+  <div class="panel">
+    <section class="scene" id="sIntro">
+      <div class="kicker">Navarathri 2026</div>
+      <h1 class="big">Navarathri Golu</h1>
+      <div class="dept">Department of Electronics and Communication Engineering</div>
+      <p class="lead">Nine nights, nine steps. Instead of dolls, our golu carries the building blocks of electronics, from a simple LED up to a satellite.</p>
+    </section>
+
+    <section class="scene" id="sDay">
+      <div class="card">
+        <div class="kicker" id="dKick"></div>
+        <h2 class="big" id="dName"></h2>
+        <p id="dText"></p>
+        <span class="where" id="dWhere"></span>
+      </div>
+    </section>
+
+    <section class="scene qrbig" id="sQr">
+      <div class="kicker">Take it with you</div>
+      <h2 class="big">Scan to explore</h2>
+      <div class="qrimg"><img src="images/golu-qr.png" alt="QR code for the golu page"></div>
+      <div class="dept">golu-virid.vercel.app</div>
+    </section>
+
+    <div class="dots" id="dots" aria-hidden="true"></div>
+    <div class="mini" id="mini"><img src="images/golu-qr.png" alt=""><span>Scan to open on your phone</span></div>
+  </div>
+</main>
+
+<div id="soundHint" role="status">Click once to turn on the sound</div>
+<audio id="narr" src="audio.mp3" preload="auto"></audio>
+
+<script>
+/* ===== EDIT THIS: same nine days as the phone page. t, h, l, w place the glowing band on the picture. ===== */
+const DAYS = [
+  { n: "LED", t: 71.8, h: 5.8, l: 8,  w: 84, x: "Light Emitting Diode. It glows when current flows through it, and it is used in indicators, screens and lighting.", s: "Bottom step" },
+  { n: "Resistor", t: 62.5, h: 6.3, l: 10, w: 80, x: "Limits the flow of current. The coloured bands on its body tell you its value.", s: "Second step" },
+  { n: "Capacitor", t: 55.2, h: 6.2, l: 12, w: 76, x: "Stores electric charge for a short time, which smooths power supplies and filters signals.", s: "Third step" },
+  { n: "Transistor", t: 47.9, h: 6.6, l: 14, w: 72, x: "Works as a switch or an amplifier: a small signal controls a much larger current.", s: "Fourth step" },
+  { n: "Integrated Circuit", t: 41.5, h: 6.5, l: 16, w: 68, x: "Thousands to billions of tiny components built on a single silicon chip.", s: "Fifth step" },
+  { n: "Microcontroller", t: 35.6, h: 6.1, l: 17, w: 66, x: "A small computer on one chip that reads sensors and controls devices, from washing machines to drones.", s: "Sixth step" },
+  { n: "Antenna", t: 29.3, h: 6.6, l: 18, w: 64, x: "Sends and receives radio waves. Every phone, Wi-Fi router and radio has one.", s: "Seventh step" },
+  { n: "Circuit Board", t: 23.9, h: 5.9, l: 19, w: 62, x: "A printed circuit board holds components and joins them with copper tracks. The gold lines on the silk steps are drawn like PCB tracks.", s: "Top step" },
+  { n: "Communication Satellite", t: 11.2, h: 10.8, l: 30, w: 40, x: "Orbits the Earth and relays signals over long distances for TV, navigation and phone links.", s: "Above the golu" }
+];
+/* How long the opening and closing screens stay (seconds). The nine days share the rest of the audio's length. */
+const INTRO = 8, OUTRO = 10, MIN_PER_DAY = 6;
+/* ======================================================================================================= */
+
+const $ = id => document.getElementById(id);
+const narr = $("narr"), band = $("band"), hint = $("soundHint"), mini = $("mini");
+const SPEED = Number(new URLSearchParams(location.search).get("speed")) || 1;   // display.html?speed=4 to preview quickly
+const scenes = [{ k: "intro" }, ...DAYS.map((d, i) => ({ k: "day", i })), { k: "qr" }];
+const dots = $("dots");
+DAYS.forEach(() => dots.appendChild(document.createElement("i")));
+
+let idx = -1, timer = null, paused = false, audioOn = false;
+
+function durations() {
+  const total = isFinite(narr.duration) && narr.duration > 0 ? narr.duration : 0;
+  const per = total ? Math.max(MIN_PER_DAY, (total - INTRO - OUTRO) / DAYS.length) : 9;
+  return [INTRO, ...DAYS.map(() => per), OUTRO].map(s => s * 1000 / SPEED);
+}
+let durs = durations();
+
+function show(k) {
+  const sc = scenes[k];
+  ["sIntro", "sDay", "sQr"].forEach(id => $(id).classList.remove("on"));
+  band.classList.remove("on");
+  mini.classList.toggle("off", sc.k === "qr");
+  [...dots.children].forEach((d, j) => d.classList.toggle("on", sc.k === "day" && j === sc.i));
+  if (sc.k === "intro") $("sIntro").classList.add("on");
+  else if (sc.k === "qr") $("sQr").classList.add("on");
+  else {
+    const d = DAYS[sc.i];
+    $("dKick").textContent = "Day " + (sc.i + 1) + " of " + DAYS.length;
+    $("dName").textContent = d.n;
+    $("dText").textContent = d.x;
+    $("dWhere").textContent = "Where to look: " + d.s;
+    band.style.cssText = `top:${d.t}%;height:${d.h}%;left:${d.l}%;width:${d.w}%`;
+    $("sDay").classList.add("on");
+    band.classList.add("on");
+  }
+}
+
+function next(step) {
+  clearTimeout(timer);
+  idx = (idx + (step || 1) + scenes.length) % scenes.length;
+  if (idx === 0) { durs = durations(); playNarration(); }
+  show(idx);
+  if (!paused) timer = setTimeout(() => next(1), durs[idx]);
+}
+
+function playNarration() {
+  narr.currentTime = 0;
+  narr.play().then(() => { audioOn = true; hint.classList.remove("show"); })
+             .catch(() => { if (!audioOn) hint.classList.add("show"); });
+}
+
+/* The first click anywhere turns the sound on and restarts the loop so voice and screen line up */
+function firstGesture() {
+  if (audioOn) return;
+  idx = scenes.length - 1; next(1);
+}
+addEventListener("pointerdown", firstGesture, { once: true });
+addEventListener("keydown", firstGesture, { once: true });
+
+addEventListener("keydown", e => {
+  if (e.key === "f" || e.key === "F") toggleFull();
+  else if (e.key === " ") { e.preventDefault(); paused = !paused; if (paused) { clearTimeout(timer); narr.pause(); } else { timer = setTimeout(() => next(1), 400); if (audioOn) narr.play().catch(() => {}); } }
+  else if (e.key === "ArrowRight") next(1);
+  else if (e.key === "ArrowLeft") next(-1);
+  else if (e.key === "m" || e.key === "M") narr.muted = !narr.muted;
+});
+function toggleFull() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {}); }
+addEventListener("dblclick", toggleFull);
+
+/* Hide the mouse pointer when nobody is using it */
+let idleT; function wake() { document.body.classList.remove("idle"); clearTimeout(idleT); idleT = setTimeout(() => document.body.classList.add("idle"), 3000); }
+addEventListener("pointermove", wake); wake();
+
+/* Keep the screen awake, and reload every few hours so it never goes stale */
+async function keepAwake() { try { await navigator.wakeLock.request("screen"); } catch (e) {} }
+keepAwake(); document.addEventListener("visibilitychange", () => { if (!document.hidden) keepAwake(); });
+setTimeout(() => location.reload(), 3 * 3600 * 1000);
+
+/* Start: the pictures loop at once; sound starts after one click if the browser blocks autoplay */
+next(1);
+
+/* Falling marigold petals */
+(function () {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cv = $("petals"), ctx = cv.getContext("2d"), cols = ["#f59e1b", "#ffc83d", "#e8731a", "#fff3dd"];
+  let W, H, ps = [];
+  function size() { const r = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * r; cv.height = H * r; ctx.setTransform(r, 0, 0, r, 0, 0); }
+  function make(top) { return { x: Math.random() * W, y: top ? -20 : Math.random() * H, r: 3 + Math.random() * 5, v: .3 + Math.random() * .7,
+    sw: Math.random() * 6.28, sp: .004 + Math.random() * .01, a: Math.random() * 6.28, rs: (Math.random() - .5) * .03, c: cols[(Math.random() * cols.length) | 0], o: .35 + Math.random() * .4 }; }
+  size(); addEventListener("resize", size);
+  for (let i = 0; i < 30; i++) ps.push(make(false));
+  (function loop() {
+    ctx.clearRect(0, 0, W, H);
+    ps.forEach((p, i) => { p.y += p.v; p.sw += p.sp; p.a += p.rs; p.x += Math.sin(p.sw) * .5; if (p.y > H + 20) ps[i] = make(true);
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.globalAlpha = p.o; ctx.fillStyle = p.c;
+      ctx.beginPath(); ctx.ellipse(0, 0, p.r, p.r * .55, 0, 0, 6.2832); ctx.fill(); ctx.restore(); });
+    requestAnimationFrame(loop);
+  })();
+})();
+</script>
+</body>
+</html>

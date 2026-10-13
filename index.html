@@ -221,6 +221,7 @@
   <strong>Happy Navarathri</strong>
   Department of Electronics and Communication Engineering<br>
   Sri Eshwar College of Engineering, Coimbatore<br>
+  Golu image made with AI
 </footer>
 
 <button id="audioBtn" aria-label="Pause audio"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="audioTxt">Listen</span></button>
@@ -285,7 +286,7 @@ function select(i, fromImage) {
   card.querySelector(".day").textContent = "Day " + (i + 1) + " of 9";
   card.querySelector("h3").textContent = d.n;
   card.querySelector("p").textContent = d.x;
-  card.querySelector(".where").textContent = "On the golu: " + d.s;
+  card.querySelector(".where").textContent = "Where to look: " + d.s;
   const prev = card.querySelector("#prev"), next = card.querySelector("#next");
   prev.disabled = i === 0; next.disabled = i === DAYS.length - 1;
   prev.onclick = () => { stopTour(); select(i - 1, false); };
