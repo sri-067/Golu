@@ -98,7 +98,21 @@
   .intro h1 { font-size: clamp(2rem, 7.5vw, 3.1rem); color: var(--gold-soft); line-height: 1.08; }
   .intro .dept { margin: 10px 0 0; color: var(--gold); font-size: 1.05rem; font-weight: 600; }
   .intro .lead { margin: 14px 0 0; max-width: 46ch; font-size: 1.12rem; line-height: 1.6; }
-  @media (max-width: 899px) { .intro { text-align: center; } .intro .lead { margin-inline: auto; } }
+  @media (max-width: 899px) {
+    .stage { gap: 16px; padding-top: 16px; }
+    .side { display: contents; }
+    .intro { order: -1; text-align: center; }
+    .figure { order: 0; }
+    .picker { order: 1; margin-top: 4px; }
+    .intro h1 { font-size: clamp(1.7rem, 8vw, 2.4rem); }
+    .intro .dept { margin-top: 4px; font-size: .95rem; }
+    .intro .lead { display: none; }
+    .picker .lead-m { display: block; }
+  }
+  .lead-m { display: none; margin: 0 0 16px; text-align: center; font-size: 1.05rem; line-height: 1.55; }
+  @media (max-width: 600px) {
+    #audioBtn { height: 44px; padding: 0 14px; font-size: .92rem; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); }
+  }
 
   .picker { margin-top: 24px; }
   .picker h2 { font-size: 1.35rem; color: var(--gold-soft); }
@@ -194,6 +208,7 @@
     </section>
 
     <section class="picker" aria-label="Nine days">
+      <p class="lead-m">Nine nights, nine steps. Instead of dolls, our golu carries the building blocks of electronics, from a simple LED up to a satellite.</p>
       <h2>Meet the nine</h2>
       <div class="chips" id="chips"></div>
       <div class="card" id="card" aria-live="polite"></div>
@@ -206,6 +221,7 @@
   <strong>Happy Navarathri</strong>
   Department of Electronics and Communication Engineering<br>
   Sri Eshwar College of Engineering, Coimbatore<br>
+  Golu image made with AI
 </footer>
 
 <button id="audioBtn" aria-label="Pause audio"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="audioTxt">Listen</span></button>
@@ -371,7 +387,8 @@ tryPlay();
 
   /* TUNE HERE: DEPTH = how far near parts slide against far parts (0.016 was subtle),
      TURN = how many degrees the whole picture swings toward you (0 turns it off). */
-  const DEPTH = 0.018, TURN = 7;
+  const COARSE = matchMedia("(pointer: coarse)").matches;   // phones and tablets
+  const DEPTH = COARSE ? 0.03 : 0.034, TURN = COARSE ? 3 : 7;
 
   const vsSrc = "attribute vec2 p; varying vec2 v; void main(){ v = vec2(p.x*.5+.5, .5-p.y*.5); gl_Position = vec4(p,0.,1.); }";
   const fsSrc = `
@@ -442,7 +459,7 @@ tryPlay();
     fit(); addEventListener("resize", fit);
     frame.classList.add("gl-on");
     const cap = document.querySelector(".caption");
-    if (cap) cap.textContent = "Move your cursor or tilt your phone to see the golu in 3D. Tap a step to learn about it.";
+    if (cap) cap.textContent = COARSE ? "Tilt your phone to see the golu in 3D. Tap a step to learn about it." : "Move your cursor to see the golu in 3D. Tap a step to learn about it.";
 
     let tx = 0, ty = 0, aimX = 0, aimY = 0, lastInput = -1e9, visible = true;
     const clamp = (n) => Math.max(-1, Math.min(1, n));
