@@ -224,7 +224,7 @@
   Golu image made with AI
 </footer>
 
-<button id="audioBtn" aria-label="Pause audio"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="audioTxt">Listen</span></button>
+<button id="audioBtn" aria-label="Pause audio"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="audioTxt">Music</span></button>
 <audio id="bgm" src="audio.mp3" preload="auto"></audio>
 
 <script>
@@ -310,7 +310,13 @@ showEmpty();
 
 /* Department audio: plays once. It tries to start at once; if the browser blocks that,
    the first tap, scroll or key press anywhere starts it. The button shows the real state. */
+/* "music" repeats forever. Use "narration" for a spoken audio that plays once. */
+const AUDIO_KIND = "music";
+const WORDS = AUDIO_KIND === "music"
+  ? { idle: "Music", need: "Tap for music", on: "Music on", off: "Music off" }
+  : { idle: "Listen", need: "Tap to listen", on: "Playing", off: "Paused" };
 const bgm = document.getElementById("bgm");
+bgm.loop = AUDIO_KIND === "music";
 const btn = document.getElementById("audioBtn");
 const txt = document.getElementById("audioTxt");
 let userPaused = false;
@@ -318,14 +324,14 @@ const kick = ["pointerdown", "touchstart", "keydown", "scroll"];
 
 function tryPlay() {
   if (userPaused) return;
-  bgm.play().catch(() => { btn.classList.add("needs"); txt.textContent = "Tap to listen"; });
+  bgm.play().catch(() => { btn.classList.add("needs"); txt.textContent = WORDS.need; });
 }
 bgm.addEventListener("play", () => {
-  btn.classList.add("playing"); txt.textContent = "Playing"; btn.setAttribute("aria-label", "Pause audio");
+  btn.classList.add("playing"); txt.textContent = WORDS.on; btn.setAttribute("aria-label", "Pause audio");
   btn.classList.remove("needs"); kick.forEach(e => window.removeEventListener(e, tryPlay));
 });
 bgm.addEventListener("pause", () => {
-  btn.classList.remove("playing"); txt.textContent = "Paused"; btn.setAttribute("aria-label", "Play audio");
+  btn.classList.remove("playing"); txt.textContent = WORDS.off; btn.setAttribute("aria-label", "Play audio");
 });
 bgm.addEventListener("ended", () => {
   btn.classList.remove("playing"); txt.textContent = "Play again"; btn.setAttribute("aria-label", "Play the audio again");
