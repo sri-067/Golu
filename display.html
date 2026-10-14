@@ -81,11 +81,16 @@
   #soundHint.show { display: block; }
 
   @media (orientation: portrait) {
-    .stage { grid-template-columns: 1fr; grid-template-rows: 54% 1fr; gap: calc(var(--u) * 2); }
+    :root { --u: .95vw; }            /* tall screens (a standee): size everything by the width */
+    body { grid-template-rows: calc(var(--u) * 16) 1fr; }
+    .stage { grid-template-columns: 1fr; grid-template-rows: 57% 1fr; gap: calc(var(--u) * 3); padding: calc(var(--u) * 2.5) calc(var(--u) * 4); }
     .fig { height: 100%; }
-    .scene { justify-content: flex-start; }
-    .big { font-size: calc(var(--u) * 7.2); }
-    .card .big { font-size: calc(var(--u) * 6.8); }
+    .scene { justify-content: flex-start; padding-bottom: calc(var(--u) * 14); }
+    .big { font-size: calc(var(--u) * 8.2); }
+    .card { max-width: 100%; }
+    .card .big { font-size: calc(var(--u) * 7.4); }
+    .qrbig .qrimg { width: calc(var(--u) * 42); height: calc(var(--u) * 42); }
+    .mini img { width: calc(var(--u) * 12); height: calc(var(--u) * 12); }
   }
   @media (prefers-reduced-motion: no-preference) {
     .box { animation: drift 24s ease-in-out infinite alternate; }
