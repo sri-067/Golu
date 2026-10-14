@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Navarathri Golu | ECE, Sri Eshwar College of Engineering</title>
+<meta name="theme-color" content="#2a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Mukta:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #20070f;
+    --maroon: #4a0f22;
+    --silk: #7a1730;
+    --gold: #e0b455;
+    --gold-soft: #f6dd96;
+    --marigold: #f59e1b;
+    --paper: #fff3dd;
+    --ink: #2a1208;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body {
+    margin: 0; min-height: 100vh;
+    font-family: "Mukta", system-ui, sans-serif;
+    color: var(--paper);
+    background:
+      radial-gradient(ellipse 90% 50% at 50% 0%, rgba(122, 23, 48, .55), transparent 70%),
+      repeating-linear-gradient(45deg, rgba(224, 180, 85, .035) 0 2px, transparent 2px 22px),
+      repeating-linear-gradient(-45deg, rgba(224, 180, 85, .035) 0 2px, transparent 2px 22px),
+      var(--night);
+    background-attachment: fixed;
+    padding-bottom: env(safe-area-inset-bottom);
+    overflow-x: clip;
+  }
+  h1, h2, h3 { font-family: "Yatra One", Georgia, serif; font-weight: 400; margin: 0; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--marigold); outline-offset: 3px; }
+
+  #petals { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  .brand, .stage, footer { position: relative; z-index: 1; }
+
+  /* College banner on a white strip so its logos keep their colours */
+  .brand { background: #fff; padding: 6px 10px; }
+  .brand img { display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto; }
+  .brand::after {
+    content: ""; display: block; height: 5px; margin: 6px -10px -6px;
+    background: linear-gradient(90deg, var(--gold), var(--marigold), var(--gold-soft), var(--marigold), var(--gold));
+    background-size: 220% 100%;
+  }
+
+  .stage {
+    max-width: 1120px; margin: 0 auto; padding: 22px 14px 90px;
+    display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 900px) {
+    .stage { grid-template-columns: minmax(380px, 500px) minmax(0, 1fr); gap: 44px; padding-top: 34px; align-items: start; }
+    .figure { position: sticky; top: 18px; }
+  }
+
+  /* The golu: image with a flickering lamp glow and tappable rows */
+  .figure { width: 100%; max-width: 520px; margin: 0 auto; position: relative; }
+  .figure::before {
+    content: ""; position: absolute; inset: -5% -3%; z-index: -1;
+    background: radial-gradient(ellipse at 50% 55%, rgba(245, 158, 27, .55), rgba(245, 158, 27, 0) 65%);
+    filter: blur(10px);
+  }
+  .frame {
+    position: relative; border: 3px solid var(--gold); border-radius: 10px; overflow: hidden;
+    box-shadow: 0 0 0 6px rgba(74, 15, 34, .9), 0 0 0 8px rgba(224, 180, 85, .6), 0 18px 50px rgba(0, 0, 0, .55);
+    background: var(--maroon);
+  }
+  .frame img { display: block; width: 100%; height: auto; }
+  .frame { touch-action: pan-y; will-change: transform; }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; visibility: hidden; }
+  .frame.gl-on #gl { visibility: visible; }
+  .frame.gl-on img { visibility: hidden; }
+  .hot {
+    position: absolute; padding: 0; background: transparent;
+    border: 2px solid transparent; border-radius: 8px;
+    transition: background .25s, border-color .25s, box-shadow .25s;
+  }
+  .hot:hover { border-color: rgba(246, 221, 150, .7); background: rgba(245, 158, 27, .12); }
+  .hot.on {
+    border-color: var(--marigold); background: rgba(245, 158, 27, .22);
+    box-shadow: 0 0 22px rgba(245, 158, 27, .7), inset 0 0 18px rgba(255, 224, 130, .4);
+  }
+  .hot .tag {
+    position: absolute; left: 6px; top: 50%; transform: translateY(-50%);
+    background: var(--gold-soft); color: var(--ink); font-weight: 700; font-size: .78rem;
+    padding: 2px 9px; border-radius: 999px; display: none; white-space: nowrap;
+  }
+  .hot.on .tag { display: block; }
+  .caption { text-align: center; color: var(--gold); font-size: .92rem; margin: 14px 0 0; }
+
+  /* Right column / below the image */
+  .intro h1 { font-size: clamp(2rem, 7.5vw, 3.1rem); color: var(--gold-soft); line-height: 1.08; }
+  .intro .dept { margin: 10px 0 0; color: var(--gold); font-size: 1.05rem; font-weight: 600; }
+  .intro .lead { margin: 14px 0 0; max-width: 46ch; font-size: 1.12rem; line-height: 1.6; }
+  @media (max-width: 899px) {
+    .stage { gap: 16px; padding-top: 16px; }
+    .side { display: contents; }
+    .intro { order: -1; text-align: center; }
+    .figure { order: 0; }
+    .picker { order: 1; margin-top: 4px; }
+    .intro h1 { font-size: clamp(1.7rem, 8vw, 2.4rem); }
+    .intro .dept { margin-top: 4px; font-size: .95rem; }
+    .intro .lead { display: none; }
+    .picker .lead-m { display: block; }
+  }
+  .lead-m { display: none; margin: 0 0 16px; text-align: center; font-size: 1.05rem; line-height: 1.55; }
+  @media (max-width: 600px) {
+    #audioBtn { height: 44px; padding: 0 14px; font-size: .92rem; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); }
+  }
+
+  .picker { margin-top: 24px; }
+  .picker h2 { font-size: 1.35rem; color: var(--gold-soft); }
+  .chips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+  .chip {
+    background: linear-gradient(var(--maroon), #36091a); border: 1px solid rgba(224, 180, 85, .45);
+    border-radius: 10px; padding: 9px 8px; text-align: left; display: flex; flex-direction: column; gap: 1px;
+    min-height: 54px; transition: transform .15s, border-color .2s, background .2s;
+  }
+  .chip small { color: var(--marigold); font-size: .78rem; }
+  .chip span { font-weight: 600; line-height: 1.15; font-size: .98rem; overflow-wrap: anywhere; }
+  @media (max-width: 420px) { .chip { padding: 8px 6px; } .chip span { font-size: .8rem; } }
+  .chip:hover { border-color: var(--gold-soft); }
+  .chip[aria-pressed="true"] { background: linear-gradient(var(--marigold), #d97f0a); color: var(--ink); border-color: var(--gold-soft); transform: translateY(-2px); }
+  .chip[aria-pressed="true"] small { color: var(--ink); }
+
+  .card {
+    margin-top: 14px; padding: 18px 18px 16px; border-radius: 14px; min-height: 150px;
+    background: linear-gradient(160deg, #fff6e3, #f6dfb0); color: var(--ink);
+    border: 2px solid var(--gold); box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
+  }
+  .card .day { color: var(--silk); font-weight: 700; font-size: .95rem; }
+  .card h3 { font-size: 1.9rem; color: #5b1226; margin: 2px 0 6px; line-height: 1.1; }
+  .card p { margin: 0; font-size: 1.08rem; line-height: 1.55; }
+  .card .where { display: block; margin-top: 8px; color: var(--silk); font-size: .92rem; font-weight: 600; }
+  .card .nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 14px; }
+  .card .nav button {
+    border: 0; border-radius: 999px; padding: 8px 18px; font-weight: 700; background: var(--silk); color: #fff;
+  }
+  .card .nav button:disabled { opacity: .35; cursor: default; }
+  .tour {
+    margin-top: 12px; width: 100%; padding: 12px; border-radius: 999px; font-weight: 700; font-size: 1.02rem;
+    background: transparent; border: 2px solid var(--gold); color: var(--gold-soft);
+  }
+  .tour[aria-pressed="true"] { background: var(--gold); color: var(--ink); }
+
+  footer { text-align: center; padding: 10px 20px 110px; color: var(--gold); font-size: .95rem; line-height: 1.7; }
+  footer strong { color: var(--gold-soft); font-family: "Yatra One", Georgia, serif; font-weight: 400; font-size: 1.3rem; display: block; }
+
+  /* Audio button with equaliser bars; it turns orange if the browser blocks autoplay */
+  #audioBtn {
+    position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 6;
+    height: 52px; padding: 0 18px; border-radius: 26px; display: flex; align-items: center; gap: 10px;
+    border: 2px solid var(--gold); background: var(--maroon); color: var(--paper); font-weight: 700;
+  }
+  .eq { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
+  .eq i { display: block; width: 4px; height: 5px; background: var(--marigold); border-radius: 2px; }
+  #audioBtn.playing .eq i { animation: eq 0.9s ease-in-out infinite; }
+  #audioBtn.playing .eq i:nth-child(2) { animation-delay: .2s; }
+  #audioBtn.playing .eq i:nth-child(3) { animation-delay: .4s; }
+  #audioBtn.needs { background: var(--marigold); color: var(--ink); border-color: var(--gold-soft); }
+  #audioBtn.needs .eq i { background: var(--ink); }
+
+  /* Motion: only if the person hasn't asked for less of it */
+  @media (prefers-reduced-motion: no-preference) {
+    .brand::after { animation: shimmer 6s linear infinite; }
+    .figure::before { animation: flicker 4.5s ease-in-out infinite; }
+    .frame { animation: rise 1s ease-out both; }
+    .hot.on { animation: pulse 1.8s ease-in-out infinite; }
+    .card.swap { animation: swap .35s ease-out; }
+    @keyframes shimmer { to { background-position: -220% 0; } }
+    @keyframes flicker { 0%, 100% { opacity: .75; } 18% { opacity: 1; } 31% { opacity: .65; } 52% { opacity: .95; } 74% { opacity: .7; } }
+    @keyframes rise { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
+    @keyframes pulse { 50% { box-shadow: 0 0 34px rgba(245, 158, 27, .95), inset 0 0 24px rgba(255, 224, 130, .55); } }
+    @keyframes swap { from { opacity: .2; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    @keyframes eq { 0%, 100% { height: 5px; } 50% { height: 18px; } }
+  }
+  @media (prefers-reduced-motion: reduce) { #petals { display: none; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<canvas id="petals" aria-hidden="true"></canvas>
+
+<header class="brand">
+  <img src="images/college-logo.png" alt="Sri Eshwar College of Engineering, Coimbatore, Tamil Nadu. An autonomous institution affiliated to Anna University, Chennai." width="937" height="266">
+</header>
+
+<main class="stage">
+  <div class="figure">
+    <div class="frame" id="frame">
+      <img src="images/golu.jpg" alt="Nine-step Navarathri golu on red and gold silk with electronic components on the steps, a kalasam, diyas and a rangoli" width="1000" height="1241" fetchpriority="high">
+      <canvas id="gl" aria-hidden="true"></canvas>
+    </div>
+    <p class="caption">Tap a step on the golu to see what is on it</p>
+  </div>
+
+  <div class="side">
+    <section class="intro">
+      <h1>Navarathri Golu</h1>
+      <p class="dept">Department of Electronics and Communication Engineering</p>
+      <p class="lead">Nine nights, nine steps. Instead of dolls, our golu carries the building blocks of electronics, from a simple LED up to a satellite.</p>
+    </section>
+
+    <section class="picker" aria-label="Nine days">
+      <p class="lead-m">Nine nights, nine steps. Instead of dolls, our golu carries the building blocks of electronics, from a simple LED up to a satellite.</p>
+      <h2>Meet the nine</h2>
+      <div class="chips" id="chips"></div>
+      <div class="card" id="card" aria-live="polite"></div>
+      <button class="tour" id="tour" aria-pressed="false">Play the tour</button>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <strong>Happy Navarathri</strong>
+  Department of Electronics and Communication Engineering<br>
+  Sri Eshwar College of Engineering, Coimbatore<br>
+  Golu image made with AI
+</footer>
+
+<button id="audioBtn" aria-label="Pause audio"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="audioTxt">Music</span></button>
+<audio id="bgm" src="audio.mp3" preload="auto"></audio>
+
+<script>
+/* ===== EDIT THIS ===== 
+   Day 1 is the bottom step, Day 9 the top.
+   t = where the glowing band starts (% of the image height), h = its height,
+   l = left edge and w = width (% of image width). Nudge these if a band is off a row. */
+const DAYS = [
+  { n: "LED", t: 71.8, h: 5.8, l: 8,  w: 84, x: "Light Emitting Diode. It glows when current flows through it, and it is used in indicators, screens and lighting.", s: "Bottom step" },
+  { n: "Resistor", t: 62.5, h: 6.3, l: 10, w: 80, x: "Limits the flow of current. The coloured bands on its body tell you its value.", s: "Second step" },
+  { n: "Capacitor", t: 55.2, h: 6.2, l: 12, w: 76, x: "Stores electric charge for a short time, which smooths power supplies and filters signals.", s: "Third step" },
+  { n: "Transistor", t: 47.9, h: 6.6, l: 14, w: 72, x: "Works as a switch or an amplifier: a small signal controls a much larger current.", s: "Fourth step" },
+  { n: "Integrated Circuit", t: 41.5, h: 6.5, l: 16, w: 68, x: "Thousands to billions of tiny components built on a single silicon chip.", s: "Fifth step" },
+  { n: "Microcontroller", c: "Micro\u00ADcontroller", t: 35.6, h: 6.1, l: 17, w: 66, x: "A small computer on one chip that reads sensors and controls devices, from washing machines to drones.", s: "Sixth step" },
+  { n: "Antenna", t: 29.3, h: 6.6, l: 18, w: 64, x: "Sends and receives radio waves. Every phone, Wi-Fi router and radio has one.", s: "Seventh step" },
+  { n: "Circuit Board", t: 23.9, h: 5.9, l: 19, w: 62, x: "A printed circuit board holds components and joins them with copper tracks. The gold lines on the silk steps are drawn like PCB tracks.", s: "Top step" },
+  { n: "Communication Satellite", c: "Satellite", t: 11.2, h: 10.8, l: 30, w: 40, x: "Orbits the Earth and relays signals over long distances for TV, navigation and phone links.", s: "Above the golu" }
+];
+/* ==================== */
+
+const frame = document.getElementById("frame");
+const chips = document.getElementById("chips");
+const card = document.getElementById("card");
+const tourBtn = document.getElementById("tour");
+let current = -1, tourTimer = null;
+
+DAYS.forEach((d, i) => {
+  const hot = document.createElement("button");
+  hot.className = "hot";
+  hot.style.cssText = `top:${d.t}%;height:${d.h}%;left:${d.l}%;width:${d.w}%`;
+  hot.setAttribute("aria-label", `Day ${i + 1}: ${d.n}`);
+  hot.innerHTML = '<span class="tag"></span>';
+  hot.querySelector(".tag").textContent = d.n;
+  hot.addEventListener("click", () => { stopTour(); select(i, true); });
+  frame.appendChild(hot);
+
+  const chip = document.createElement("button");
+  chip.className = "chip";
+  chip.setAttribute("aria-pressed", "false");
+  chip.innerHTML = "<small></small><span></span>";
+  chip.querySelector("small").textContent = "Day " + (i + 1);
+  chip.querySelector("span").textContent = d.c || d.n;
+  chip.addEventListener("click", () => { stopTour(); select(i, false); });
+  chips.appendChild(chip);
+});
+
+function showEmpty() {
+  card.innerHTML = '<div class="day">Nine days, nine components</div><h3>Pick a day</h3><p>Tap a day above, or tap any step on the golu, to see what sits there.</p>';
+}
+
+function select(i, fromImage) {
+  current = i;
+  const d = DAYS[i];
+  frame.querySelectorAll(".hot").forEach((h, k) => h.classList.toggle("on", k === i));
+  chips.querySelectorAll(".chip").forEach((c, k) => c.setAttribute("aria-pressed", String(k === i)));
+  card.innerHTML =
+    '<div class="day"></div><h3></h3><p></p><span class="where"></span>' +
+    '<div class="nav"><button id="prev">Previous</button><button id="next">Next</button></div>';
+  card.querySelector(".day").textContent = "Day " + (i + 1) + " of 9";
+  card.querySelector("h3").textContent = d.n;
+  card.querySelector("p").textContent = d.x;
+  card.querySelector(".where").textContent = "Where to look: " + d.s;
+  const prev = card.querySelector("#prev"), next = card.querySelector("#next");
+  prev.disabled = i === 0; next.disabled = i === DAYS.length - 1;
+  prev.onclick = () => { stopTour(); select(i - 1, false); };
+  next.onclick = () => { stopTour(); select(i + 1, false); };
+  card.classList.remove("swap"); void card.offsetWidth; card.classList.add("swap");
+  if (fromImage) card.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+
+function startTour() {
+  tourBtn.setAttribute("aria-pressed", "true"); tourBtn.textContent = "Stop the tour";
+  let i = 0; select(0, false);
+  tourTimer = setInterval(() => { i = (i + 1) % DAYS.length; select(i, false); }, 5000);
+}
+function stopTour() {
+  if (!tourTimer) return;
+  clearInterval(tourTimer); tourTimer = null;
+  tourBtn.setAttribute("aria-pressed", "false"); tourBtn.textContent = "Play the tour";
+}
+tourBtn.addEventListener("click", () => tourTimer ? stopTour() : startTour());
+showEmpty();
+
+/* Department audio: plays once. It tries to start at once; if the browser blocks that,
+   the first tap, scroll or key press anywhere starts it. The button shows the real state. */
+/* "music" repeats forever. Use "narration" for a spoken audio that plays once. */
+const AUDIO_KIND = "music";
+const WORDS = AUDIO_KIND === "music"
+  ? { idle: "Music", need: "Tap for music", on: "Music on", off: "Music off" }
+  : { idle: "Listen", need: "Tap to listen", on: "Playing", off: "Paused" };
+const bgm = document.getElementById("bgm");
+bgm.loop = AUDIO_KIND === "music";
+const btn = document.getElementById("audioBtn");
+const txt = document.getElementById("audioTxt");
+let userPaused = false;
+const kick = ["pointerdown", "touchstart", "keydown", "scroll"];
+
+function tryPlay() {
+  if (userPaused) return;
+  bgm.play().catch(() => { btn.classList.add("needs"); txt.textContent = WORDS.need; });
+}
+bgm.addEventListener("play", () => {
+  btn.classList.add("playing"); txt.textContent = WORDS.on; btn.setAttribute("aria-label", "Pause audio");
+  btn.classList.remove("needs"); kick.forEach(e => window.removeEventListener(e, tryPlay));
+});
+bgm.addEventListener("pause", () => {
+  btn.classList.remove("playing"); txt.textContent = WORDS.off; btn.setAttribute("aria-label", "Play audio");
+});
+bgm.addEventListener("ended", () => {
+  btn.classList.remove("playing"); txt.textContent = "Play again"; btn.setAttribute("aria-label", "Play the audio again");
+});
+kick.forEach(e => window.addEventListener(e, tryPlay, { passive: true }));
+btn.addEventListener("click", ev => {
+  ev.stopPropagation();
+  if (bgm.paused) { userPaused = false; bgm.play().catch(() => {}); }
+  else { userPaused = true; bgm.pause(); }
+});
+tryPlay();
+
+/* Falling marigold petals: light, slow, and switched off for reduced motion */
+(function () {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cv = document.getElementById("petals"), ctx = cv.getContext("2d");
+  const colours = ["#f59e1b", "#ffc83d", "#e8731a", "#fff3dd"];
+  let W, H, dpr, ps = [], run = true;
+  function size() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function make(top) {
+    return { x: Math.random() * W, y: top ? -20 : Math.random() * H, r: 3 + Math.random() * 4,
+      v: .25 + Math.random() * .6, sw: Math.random() * 6.28, sp: .004 + Math.random() * .01,
+      a: Math.random() * 6.28, rs: (Math.random() - .5) * .03, c: colours[(Math.random() * colours.length) | 0],
+      o: .35 + Math.random() * .4 };
+  }
+  size(); addEventListener("resize", size);
+  const n = W < 600 ? 14 : 26;
+  for (let i = 0; i < n; i++) ps.push(make(false));
+  document.addEventListener("visibilitychange", () => { run = !document.hidden; if (run) loop(); });
+  function loop() {
+    if (!run) return;
+    ctx.clearRect(0, 0, W, H);
+    ps.forEach((p, i) => {
+      p.y += p.v; p.sw += p.sp; p.a += p.rs; p.x += Math.sin(p.sw) * .5;
+      if (p.y > H + 20) ps[i] = make(true);
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.globalAlpha = p.o;
+      ctx.fillStyle = p.c; ctx.beginPath(); ctx.ellipse(0, 0, p.r, p.r * .55, 0, 0, 6.2832); ctx.fill();
+      ctx.restore();
+    });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* 3D depth: the golu picture is drawn on a canvas and shifted by a depth map, so the
+   steps seem to stand out as you move the mouse or tilt the phone. If anything fails
+   (no WebGL, reduced motion, opened as a local file) the normal picture stays. */
+(function () {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const frame = document.getElementById("frame");
+  const img = frame.querySelector("img");
+  const cv = document.getElementById("gl");
+  const gl = cv.getContext("webgl", { antialias: false, alpha: false });
+  if (!gl) return;
+
+  /* TUNE HERE: DEPTH = how far near parts slide against far parts (0.016 was subtle),
+     TURN = how many degrees the whole picture swings toward you (0 turns it off). */
+  const COARSE = matchMedia("(pointer: coarse)").matches;   // phones and tablets
+  const DEPTH = COARSE ? 0.03 : 0.034, TURN = COARSE ? 3 : 7;
+
+  const vsSrc = "attribute vec2 p; varying vec2 v; void main(){ v = vec2(p.x*.5+.5, .5-p.y*.5); gl_Position = vec4(p,0.,1.); }";
+  const fsSrc = `
+    precision mediump float;
+    varying vec2 v;
+    uniform sampler2D img, dep;
+    uniform vec2 tilt, px;
+    void main(){
+      vec2 uv = (v - .5) / 1.06 + .5;
+      vec2 off = vec2(tilt.x, tilt.y * .75) * ${DEPTH.toFixed(4)};
+      float d = texture2D(dep, uv).r;
+      vec2 u = uv + off * (d - .4);
+      d = texture2D(dep, u).r;  u = uv + off * (d - .4);
+      d = texture2D(dep, u).r;  u = uv + off * (d - .4);
+      vec3 col = texture2D(img, u).rgb;
+      float dx = texture2D(dep, u + vec2(px.x, 0.)).r - texture2D(dep, u - vec2(px.x, 0.)).r;
+      float dy = texture2D(dep, u + vec2(0., px.y)).r - texture2D(dep, u - vec2(0., px.y)).r;
+      vec3 n = normalize(vec3(-dx * 9., -dy * 9., 1.));
+      vec3 L = normalize(vec3(tilt.x * .6, -tilt.y * .6 - .25, 1.));
+      float lit = dot(n, L) - dot(vec3(0., 0., 1.), L);
+      col *= 1. + .6 * lit;
+      col *= 1. - .10 * (1. - d);
+      gl_FragColor = vec4(col, 1.);
+    }`;
+  function sh(type, src) { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return gl.getShaderParameter(o, gl.COMPILE_STATUS) ? o : null; }
+  const vs = sh(gl.VERTEX_SHADER, vsSrc), fs = sh(gl.FRAGMENT_SHADER, fsSrc);
+  if (!vs || !fs) return;
+  const prog = gl.createProgram(); gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+  gl.useProgram(prog);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const uTilt = gl.getUniformLocation(prog, "tilt"), uPx = gl.getUniformLocation(prog, "px");
+
+  function tex(unit, source) {
+    const t = gl.createTexture(); gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, source);
+  }
+
+  const depthImg = new Image();
+  const ready = new Promise((res, rej) => {
+    let n = 0; const one = () => { if (++n === 2) res(); };
+    if (img.complete && img.naturalWidth) one();
+    else { img.addEventListener("load", one); img.addEventListener("error", rej); }
+    depthImg.onload = one; depthImg.onerror = rej; depthImg.src = "images/golu-depth.png";
+  });
+
+  cv.addEventListener("webglcontextlost", e => { e.preventDefault(); frame.classList.remove("gl-on"); });
+
+  ready.then(() => {
+    try {
+      tex(0, img); tex(1, depthImg);
+      gl.uniform1i(gl.getUniformLocation(prog, "img"), 0);
+      gl.uniform1i(gl.getUniformLocation(prog, "dep"), 1);
+      gl.uniform2f(uPx, 1 / depthImg.naturalWidth, 1 / depthImg.naturalHeight);
+    } catch (e) { return; }   // e.g. opened from a local file: keep the plain picture
+
+    function fit() {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const w = Math.round(frame.clientWidth * dpr), h = Math.round(frame.clientHeight * dpr);
+      if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; gl.viewport(0, 0, w, h); }
+    }
+    fit(); addEventListener("resize", fit);
+    frame.classList.add("gl-on");
+    const cap = document.querySelector(".caption");
+    if (cap) cap.textContent = COARSE ? "Tilt your phone to see the golu in 3D. Tap a step to learn about it." : "Move your cursor to see the golu in 3D. Tap a step to learn about it.";
+
+    let tx = 0, ty = 0, aimX = 0, aimY = 0, lastInput = -1e9, visible = true;
+    const clamp = (n) => Math.max(-1, Math.min(1, n));
+    function aim(x, y) { aimX = clamp(x); aimY = clamp(y); lastInput = performance.now(); }
+
+    addEventListener("pointermove", e => {
+      if (e.pointerType === "touch") return;
+      aim((e.clientX / innerWidth - .5) * 2, (e.clientY / innerHeight - .5) * 2);
+    }, { passive: true });
+    frame.addEventListener("pointermove", e => {
+      if (e.pointerType !== "touch") return;
+      const r = frame.getBoundingClientRect();
+      aim(((e.clientX - r.left) / r.width - .5) * 2, ((e.clientY - r.top) / r.height - .5) * 2);
+    }, { passive: true });
+
+    function onTilt(e) {
+      if (e.gamma == null || e.beta == null) return;
+      aim(e.gamma / 22, (e.beta - 50) / 22);
+    }
+    if ("DeviceOrientationEvent" in window) {
+      if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        // iPhones ask for permission, and only after a tap
+        addEventListener("pointerup", () => {
+          DeviceOrientationEvent.requestPermission().then(r => { if (r === "granted") addEventListener("deviceorientation", onTilt); }).catch(() => {});
+        }, { once: true });
+      } else addEventListener("deviceorientation", onTilt);
+    }
+
+    new IntersectionObserver(es => { visible = es[0].isIntersecting; }, { threshold: 0 }).observe(frame);
+    function draw(now) {
+      requestAnimationFrame(draw);
+      if (!visible || document.hidden) return;
+      if (now - lastInput > 2500) {   // nobody is moving: a slow, gentle sway keeps it alive
+        aimX = Math.sin(now / 1700) * .55; aimY = Math.cos(now / 2300) * .3;
+      }
+      tx += (aimX - tx) * .08; ty += (aimY - ty) * .08;
+      frame.style.transform = `perspective(1100px) rotateY(${(tx * TURN).toFixed(2)}deg) rotateX(${(-ty * TURN * .7).toFixed(2)}deg)`;
+      fit(); gl.uniform2f(uTilt, tx, ty);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+    requestAnimationFrame(draw);
+  }).catch(() => {});   // any failure: the normal picture just stays
+})();
+</script>
+</body>
+</html>
